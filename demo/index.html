@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <title>Validator JS demo</title>
+    <link
+            rel="stylesheet"
+            href="https://unpkg.com/spectre.css/dist/spectre.min.css"
+    />
+    <link
+            rel="stylesheet"
+            href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css"
+    />
+    <link
+            rel="stylesheet"
+            href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css"
+    />
+</head>
+<body>
+<div
+        class="container p-centered"
+        style="width: 800px; text-align: center;"
+>
+    <div class="columns">
+        <div class="column col-12">
+            <div class="py-2">
+                <div class="h1">ValidatorJS demo</div>
+            </div>
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column col-12">
+            <form id="myform">
+                <fieldset class="empty">
+                    <label for="input_lastname">Lastname input</label>
+                    <input type="text" id="input_lastname" name="input_lastname">
+                    <div class="my-2">
+                        <div class="columns">
+                            <div class="col-3 column"></div>
+                            <div class="column col-6 text-left">
+                                <p class="label label-primary">lastnamemustbebob</p>
+                                <p class="label label-primary">required</p>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="col-3 column"></div>
+                            <div class="column col-6 text-left">
+                                <button type="button" class="btn" id="add_error_btn">Add error programatically</button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="empty">
+                    <label for="input_text">Text input</label>
+                    <input type="text" id="input_text" name="input_text">
+                    <div class="columns" style="margin: 12px 0;">
+                        <div class="col-3 column"></div>
+                        <div class="column col-6 text-left">
+                            <p class="label label-primary">name</p>
+                            <p class="label label-primary">required</p>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="empty">
+                    <label for="input_email">Email input</label>
+                    <input type="text" id="input_email" name="input_email">
+                    <div class="columns" style="margin: 12px 0;">
+                        <div class="col-3 column"></div>
+                        <div class="column col-6 text-left">
+                            <p class="label label-primary">email</p>
+                            <p class="label label-primary">required</p>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="empty">
+                    <label for="input_password">Password input</label>
+                    <input type="password" id="input_password" name="input_password">
+                    <div class="columns" style="margin: 12px 0;">
+                        <div class="col-3 column"></div>
+                        <div class="column col-6 text-left">
+                            <p class="label label-primary">password (lower, decimal, 6 char min)</p>
+                            <p class="label label-primary">required</p>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<template id="vjs-error-template">
+    <div>
+        <div style="margin-top: 6px;" class="label label-error" data-vjs-error-message></div>
+    </div>
+</template>
+<script type="module">
+    import validatorjs from '../validator.js'
+
+    let validator = validatorjs.create(document.getElementById('myform'), {
+        input_lastname: [
+            validatorjs.defaults.get('required')(),
+            (function lastNameMustBeBob() {
+                return {
+                    event: 'input',
+                    message: `The lastname must be Bob.`,
+                    validator: function (value) {
+                        return value === 'Bob';
+                    }
+                }
+            })(),
+        ],
+        input_email: [
+            validatorjs.defaults.get('required')(),
+            validatorjs.defaults.get('email')(),
+        ],
+        input_text: [
+            validatorjs.defaults.get('required')(),
+            validatorjs.defaults.get('name')(),
+        ],
+        input_password: [
+            validatorjs.defaults.get('required')(),
+            validatorjs.defaults.get('password')('lud'),
+        ]
+    });
+    validator.initialize();
+
+    document.getElementById('add_error_btn').addEventListener('click', function(){
+        validator.addError('input_lastname', 'This is an error added programatically.', true)
+    })
+</script>
+</body>
+</html>
