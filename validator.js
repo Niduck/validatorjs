@@ -120,8 +120,8 @@ let validator = function (form, assertions, valid) {
         },
         initialize() {
             let self = this;
-            if (!form instanceof HTMLFormElement) {
-                console.error('Validator.js : form must be an instance of HTMLFormElement')
+            if (!form instanceof HTMLFormElement && !Object.prototype.hasOwnProperty.call(form, 'elements')) {
+                console.error('Validator.js : Form is not an HTMLFormElement')
                 return false;
             }
             console.log(form, form.elements)
